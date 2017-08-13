@@ -1,0 +1,4 @@
+{"category": "1", "interval": 1}
+{"category": "2", "interval": 1}
+{"category": "3", "interval": 1}
+{"category": "4", "interval": 1}
