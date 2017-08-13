@@ -13,7 +13,8 @@ public class ScheduledTasks implements Runnable {
 
     @Override
     public void run() {
-//        this.restTemplate.getForObject(url, String.class);
-        System.out.println("Send REST request to " + url);
+        String result = this.restTemplate.getForObject("http://ProductCrawler/api/greeting", String.class);
+        System.out.println("Ping serverID " + result);
+//        System.out.println("Send REST request to " + url);
     }
 }
