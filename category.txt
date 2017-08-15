@@ -1,4 +1,4 @@
-{"category": "1", "interval": 1}
-{"category": "2", "interval": 1}
-{"category": "3", "interval": 1}
-{"category": "4", "interval": 1}
+{"category": "skin care", "interval": 2, "url": "https://www.amazon.com/s/ref=s9_acss_bw_cg_BeautCat_2a1_w?rh=i%3Abeauty%2Cn%3A11060711&ie=UTF8"}
+{"category": "tv", "interval": 2, "url": "https://www.amazon.com/b/ref=s9_acss_bw_ct_TVCat_ct_1_h_w?_encoding=UTF8&node=172659"}
+{"category": "sofa", "interval": 2, "url": "https://www.amazon.com/b?node=3733551&ref=VS_F_LR_Sofas_1063318_desktop_vsf"}
+{"category": "mattress", "interval": 2, "url": "https://www.amazon.com/b?node=3732981&ref=VS_F_SF_Mattresses_1063306_desktop_vsf"}

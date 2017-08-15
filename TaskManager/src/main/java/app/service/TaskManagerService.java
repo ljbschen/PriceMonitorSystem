@@ -1,5 +1,6 @@
-package app;
+package app.service;
 
+import app.domain.Category;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,12 +26,12 @@ public class TaskManagerService {
     }
 
 
-    private HashMap<String, Integer> scheduleMap;
+    private HashMap<String, Category> scheduleMap;
 
     @Value("${category.file}")
     private String categoryFile;
 
-    void init() {
+    public void init() {
         scheduleMap = new HashMap<>();
         BufferedReader br = null;
         FileReader fr = null;
@@ -41,7 +42,10 @@ public class TaskManagerService {
             while ((line = br.readLine()) != null) {
                 JSONObject object = new JSONObject(line);
                 System.out.println("category is " + object.getString("category"));
-                scheduleMap.put(object.getString("category"), object.getInt("interval"));
+                String category = object.getString("category");
+                int interval = object.getInt("interval");
+                String url = object.getString("url");
+                scheduleMap.put(object.getString("category"), new Category(category, interval, url));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,10 +64,10 @@ public class TaskManagerService {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(scheduleMap.keySet().size());
     }
 
-    void start() {
+    public void start() {
         for (String category : scheduleMap.keySet()) {
-            this.scheduledExecutorService.scheduleAtFixedRate(new ScheduledTasks(restTemplate, category), 0,
-                    (long)scheduleMap.get(category), TimeUnit.MINUTES);
+            this.scheduledExecutorService.scheduleAtFixedRate(new ScheduledTasks(restTemplate, scheduleMap.get(category)), 0,
+                    (long)scheduleMap.get(category).getInterval(), TimeUnit.MINUTES);
         }
     }
 }

@@ -1,0 +1,5 @@
+cassandra:
+  hostname: productCrawler
+  image: cassandra:latest
+  ports:
+    - "9042:9042"

@@ -1,11 +1,12 @@
 package app.rest;
 
+import app.domain.Ad;
+import app.domain.Category;
+import app.service.ProductCrawlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
 import java.util.List;
@@ -16,9 +17,12 @@ public class ProductCrawlerRestController {
     @Value("${eureka.instance.instanceId}")
     private String instanceId;
 
+    private ProductCrawlerService productCrawlerService;
+
     @Autowired
-    public ProductCrawlerRestController(DiscoveryClient discoveryClient) {
+    public ProductCrawlerRestController(DiscoveryClient discoveryClient, ProductCrawlerService productCrawlerService) {
         this.discoveryClient = discoveryClient;
+        this.productCrawlerService = productCrawlerService;
     }
 
     @RequestMapping("/service-instances/{applicationName}")
@@ -35,6 +39,17 @@ public class ProductCrawlerRestController {
             e.printStackTrace();
         }
         return instanceId;
+    }
+
+    @RequestMapping(value = "/api/task", method = RequestMethod.POST)
+    public String executeTask(@RequestBody Category category) {
+        this.productCrawlerService.startTask(category);
+        return instanceId;
+    }
+
+    @RequestMapping(value = "/api/ads/{adId}", method = RequestMethod.GET)
+    public Ad executeTask(@PathVariable String adId) {
+        return this.productCrawlerService.getAdByAdId(adId);
     }
 
 }
