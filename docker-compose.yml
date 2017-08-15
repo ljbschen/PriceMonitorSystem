@@ -3,3 +3,9 @@ cassandra:
   image: cassandra:latest
   ports:
     - "9042:9042"
+
+rabbitmq:
+  image: rabbitmq:management
+  ports:
+    - "5672:5672"
+    - "15672:15672"

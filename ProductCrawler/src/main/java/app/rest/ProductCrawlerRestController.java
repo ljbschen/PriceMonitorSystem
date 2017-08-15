@@ -1,6 +1,5 @@
 package app.rest;
 
-import app.domain.Ad;
 import app.domain.Category;
 import app.service.ProductCrawlerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +45,4 @@ public class ProductCrawlerRestController {
         this.productCrawlerService.startTask(category);
         return instanceId;
     }
-
-    @RequestMapping(value = "/api/ads/{adId}", method = RequestMethod.GET)
-    public Ad executeTask(@PathVariable String adId) {
-        return this.productCrawlerService.getAdByAdId(adId);
-    }
-
 }

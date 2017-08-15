@@ -1,29 +1,26 @@
 package app.service;
 
 import app.domain.Ad;
-import app.domain.AdRepository;
 import app.domain.Category;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class ProductCrawlerService {
-    private AdRepository adRepository;
-    private final static Logger logger = Logger.getLogger(ProductCrawlerService.class);
+    private static final Logger logger = Logger.getLogger(ProductCrawlerService.class);
     private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; xIntel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
-
-    @Autowired
-    public ProductCrawlerService(AdRepository adRepository) {
-        this.adRepository = adRepository;
-    }
+    private static final String EXCHANGE_NAME = "ads";
 
     public void startTask(Category category) {
         try {
@@ -36,13 +33,35 @@ public class ProductCrawlerService {
                 Ad ad = parseToAd(element);
                 ad.setCategory(category.getCategory());
                 if (ad.getAdId() != null && !ad.getAdId().equals("") && ad.getPrice() > 0.0) {
-                    this.adRepository.save(ad);
-                    System.out.println("save into database");
+                    // push to message queue
+                    pushToQueue(ad);
+//                    this.adRepository.save(ad);
+                    System.out.println("push into MQ");
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
+        }
+    }
+
+    private void pushToQueue(Ad ad) {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        Connection connection = null;
+        try {
+            connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+
+            channel.exchangeDeclare(EXCHANGE_NAME, "direct");
+
+            channel.basicPublish(EXCHANGE_NAME, ad.getCategory(), null, ad.toString().getBytes());
+            System.out.println(" [x] Sent '" + ad.toString() + "'");
+
+            channel.close();
+            connection.close();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
         }
     }
 
@@ -94,9 +113,5 @@ public class ProductCrawlerService {
             logger.error(e.getMessage());
         }
         return ad;
-    }
-
-    public Ad getAdByAdId(String adId) {
-        return adRepository.getAdByAdId(adId);
     }
 }

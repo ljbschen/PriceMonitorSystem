@@ -7,9 +7,6 @@ import org.springframework.cassandra.core.PrimaryKeyType;
 import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.mapping.Table;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Data
 @Table(value = "ADS")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,11 +21,10 @@ public class Ad {
 
     @Override
     public String toString() {
-        return "{\"adId\": \"" + adId + "\"," +
-                "\"category\": \"" + category + "\"," +
-                "\"title\": \"" + title + "\"," +
+        return "{\"adId\": " + adId + "," +
+                "\"category\": " + category + "," +
+                "\"title\": " + title + "," +
                 "\"price\": " + price + "," +
-                "\"detail_url\": \"" + detail_url + "\"}";
+                "\"detail_url\": " + detail_url + "}";
     }
 }
-
