@@ -79,7 +79,7 @@ public class ProductCrawlerService {
             Elements titleEleList = element.getElementsByAttribute("title");
             if (titleEleList.size() > 0) {
                 title = titleEleList.get(0).attr("title");
-                ad.setTitle(title);
+                ad.setTitle(title.replace("\"", ""));
             }
 
             // get price

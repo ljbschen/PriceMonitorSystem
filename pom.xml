@@ -15,6 +15,7 @@
         <module>ProductCrawler</module>
         <module>Platform</module>
         <module>PriceMonitorService</module>
+        <module>RecommandService</module>
     </modules>
 
     <parent>
